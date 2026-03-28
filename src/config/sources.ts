@@ -183,12 +183,12 @@ export const COMMANDERS_KEYWORDS: string[] = [
   'dan quinn',
   'adam peters',
   'josh harris',
-  'bobby mclaughlin',    // DC
+  'bobby mclaughlin',
   'kliff kingsbury',
   'terry mclaurin',
   'brian robinson',
   'austin ekeler',
-  'sam howell',          // still relevant for trade context
+  'sam howell',
   'casey toohill',
   'daron payne',
   'jamin davis',
@@ -198,6 +198,19 @@ export const COMMANDERS_KEYWORDS: string[] = [
   'hogs haven',
   'fedexfield',
   'rfk stadium',
+  'noah brown',
+  'dyami brown',
+  'zach ertz',
+  'leo chenal',
+  'jeremy mcnichols',
+  'bobby wagner',
+  'brandon aubrey',
+  'washington nfl',
+  'washington qb',
+  'washington defense',
+  'washington offense',
+  'washington draft',
+  'washington free agent',
 ];
 
 // ─── Broader NFL keywords that add partial relevance ─────────────────────────

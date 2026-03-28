@@ -8,5 +8,7 @@ export const REPORTER_CONFIG = {
     { handle: 'BenStandig',     name: 'Ben Standig',     outlet: 'Last Man Standig' },
     { handle: 'Mitch_Tischler', name: 'Mitch Tischler',  outlet: 'Monumental Sports Network' },
     { handle: 'ZachSelbyWC',    name: 'Zach Selby',      outlet: 'Commanders.com' },
+    { handle: 'DHarrison82',    name: 'David Harrison',  outlet: 'Locked On Commanders' },
+    { handle: 'granthpaulsen',  name: 'Grant Paulsen',   outlet: '106.7 The Fan' },
   ],
 };

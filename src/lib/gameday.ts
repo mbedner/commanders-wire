@@ -116,6 +116,61 @@ function buildPlay(p: any, wasId: string): GamePlay {
   };
 }
 
+// ── Dev / preview mock ────────────────────────────────────────────────────────
+// Activated via ?gameday=pregame|live|halftime|postgame in the URL (server-side).
+
+export function getMockGame(phase: GamePhase): GameDayInfo {
+  const kickoffIso = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+
+  const washington: GameTeam = {
+    id: '28', name: 'Commanders', abbreviation: 'WAS',
+    score: phase === 'pregame' ? 0 : phase === 'postgame' ? 24 : 17,
+    isHome: true, winner: phase === 'postgame', logo: '', color: '5a1414',
+  };
+  const opponent: GameTeam = {
+    id: '6', name: 'Cowboys', abbreviation: 'DAL',
+    score: phase === 'pregame' ? 0 : phase === 'postgame' ? 17 : 10,
+    isHome: false, winner: false, logo: '', color: '003594',
+  };
+
+  const mockPlays: GamePlay[] = [
+    { id:'1', text:'J.Daniels pass short right to T.McLaurin to DAL 22 for 18 yards (T.Diggs)', type:'Pass Reception', clock:'8:42', period:3, isScoring:false, scoringType:'', wasScore:17, oppScore:10 },
+    { id:'2', text:'J.Daniels scrambles left for 9 yards (L.Collins)', type:'Rushing', clock:'9:14', period:3, isScoring:false, scoringType:'', wasScore:17, oppScore:10 },
+    { id:'3', text:'R.White up the middle for 4 yards (M.Parsons)', type:'Rushing', clock:'9:51', period:3, isScoring:false, scoringType:'', wasScore:17, oppScore:10 },
+    { id:'4', text:'TOUCHDOWN — R.White 4 Yd Run (Brandon Aubrey kicks extra point)', type:'Rushing TD', clock:'11:02', period:3, isScoring:true, scoringType:'TD', wasScore:17, oppScore:10 },
+    { id:'5', text:'J.Daniels pass deep right to N.Brown to DAL 8 for 31 yards', type:'Pass Reception', clock:'11:48', period:3, isScoring:false, scoringType:'', wasScore:10, oppScore:10 },
+    { id:'6', text:'D.Prescott pass short middle to C.Lamb to WAS 38 for 12 yards', type:'Pass Reception', clock:'13:21', period:3, isScoring:false, scoringType:'', wasScore:10, oppScore:10 },
+    { id:'7', text:'Brandon Aubrey 48 Yd Field Goal', type:'Field Goal', clock:'0:02', period:2, isScoring:true, scoringType:'FG', wasScore:10, oppScore:10 },
+    { id:'8', text:'J.Daniels pass incomplete deep left (T.Diggs)', type:'Pass Incompletion', clock:'0:08', period:2, isScoring:false, scoringType:'', wasScore:7, oppScore:10 },
+    { id:'9', text:'TOUCHDOWN — J.Daniels 1 Yd Run', type:'Rushing TD', clock:'4:33', period:2, isScoring:true, scoringType:'TD', wasScore:7, oppScore:7 },
+    { id:'10', text:'TOUCHDOWN — C.Lamb 22 Yd Pass from D.Prescott', type:'Passing TD', clock:'8:15', period:2, isScoring:true, scoringType:'TD', wasScore:0, oppScore:7 },
+  ];
+
+  const scoringPlays = mockPlays.filter(p => p.isScoring);
+
+  return {
+    gameId:        'MOCK',
+    phase,
+    kickoffIso,
+    kickoffDisplay:'4:25 PM ET',
+    network:       'FOX',
+    venue:         'FedExField · Landover, MD',
+    washington,
+    opponent,
+    period:        phase === 'pregame' ? 1 : phase === 'postgame' ? 4 : 3,
+    periodDisplay: phase === 'pregame' ? 'Q1' : phase === 'halftime' ? 'Half' : phase === 'postgame' ? 'Q4' : 'Q3',
+    clock:         phase === 'live' ? '8:42' : '0:00',
+    situation: phase === 'live' ? {
+      down: 2, distance: 7, yardLine: 31,
+      downDistanceText: '2nd & 7',
+      possessionTeamId: '28',
+      isWashingtonPossession: true,
+    } : null,
+    recentPlays:  mockPlays,
+    scoringPlays,
+  };
+}
+
 // ── Main export ───────────────────────────────────────────────────────────────
 
 export async function detectGameDay(): Promise<GameDayInfo | null> {

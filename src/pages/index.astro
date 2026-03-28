@@ -2,8 +2,8 @@
 import type { StoredData } from '../lib/types';
 import type { LiveStats, EspnTransaction } from '../lib/espn';
 import { fetchTransactions } from '../lib/espn';
-import { detectGameDay } from '../lib/gameday';
-import type { GameDayInfo } from '../lib/gameday';
+import { detectGameDay, getMockGame } from '../lib/gameday';
+import type { GameDayInfo, GamePhase } from '../lib/gameday';
 import { readAll } from '../lib/kv';
 import { SITE, TRANSACTION_SEASON } from '../config/site';
 import { IMPORTANT_DATES, UPCOMING_SCHEDULE, TEAM_STATS, LAST_SEASON } from '../config/schedule';
@@ -259,8 +259,14 @@ if (articles.length === 0) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Game Day Detection ────────────────────────────────────────────────────────
+const VALID_PHASES = new Set(['pregame', 'live', 'halftime', 'postgame']);
+const forcePhase = Astro.url.searchParams.get('gameday') as GamePhase | null;
 let gameDay: GameDayInfo | null = null;
-try { gameDay = await detectGameDay(); } catch {}
+if (forcePhase && VALID_PHASES.has(forcePhase)) {
+  gameDay = getMockGame(forcePhase);
+} else {
+  try { gameDay = await detectGameDay(); } catch {}
+}
 
 const leads       = articles.slice(0, SITE.leadCount);
 const streamItems = articles.slice(SITE.leadCount, SITE.storyCount);

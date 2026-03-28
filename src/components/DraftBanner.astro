@@ -240,12 +240,16 @@ const countdownIso = roundStartIso();
           `).join('');
         }
 
-        // Update recent picks list
+        // Update recent picks list — newest pick always at top
         const recentPicksData = [...completedPicks].reverse().slice(0, 15);
         const listEl = document.getElementById('drRecentList');
         if (listEl && recentPicksData.length) {
-          listEl.innerHTML = recentPicksData.map(pick => `
-            <div class="dr-pick-row ${pick.isWashington ? 'dr-pick-row--was' : ''}">
+          const prevTopOverall = listEl.querySelector('.dr-pick-num')?.textContent;
+          const newTopOverall  = `#${recentPicksData[0]?.overall}`;
+          const hasNewPick     = prevTopOverall !== newTopOverall;
+
+          listEl.innerHTML = recentPicksData.map((pick, i) => `
+            <div class="dr-pick-row ${pick.isWashington ? 'dr-pick-row--was' : ''} ${i === 0 && hasNewPick ? 'dr-pick-row--new' : ''}">
               <div class="dr-pick-meta">
                 <span class="dr-pick-num">#${pick.overall}</span>
                 <span class="dr-pick-rnd">Rd ${pick.round}</span>
@@ -257,6 +261,9 @@ const countdownIso = roundStartIso();
               <span class="dr-pick-pos">${pick.position}</span>
             </div>
           `).join('');
+
+          // Always snap back to top so newest pick is in view
+          listEl.scrollTop = 0;
         }
 
         // If draft completed, reload for post-draft layout
@@ -579,6 +586,17 @@ const countdownIso = roundStartIso();
   .dr-pick-row--was {
     background: #1a1000;
     border-bottom-color: #2a2000;
+  }
+  /* Flash on newly arrived pick */
+  @keyframes dr-new-pick {
+    0%   { background: #1e2a1e; }
+    100% { background: transparent; }
+  }
+  .dr-pick-row--new {
+    animation: dr-new-pick 1.2s ease-out forwards;
+  }
+  .dr-pick-row--was.dr-pick-row--new {
+    animation: none; /* WAS rows keep their gold bg, no flash needed */
   }
   .dr-pick-meta {
     display: flex;

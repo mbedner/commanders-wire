@@ -28,7 +28,7 @@ export const SOURCES: SourceConfig[] = [
     quality:          7,
     type:             'blog',
     commandersFocus:  true,
-    enabled:          true,
+    enabled:          false, // last published Nov 2025, inactive blog
   },
   {
     id:               'hogs-haven',

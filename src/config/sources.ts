@@ -60,6 +60,15 @@ export const SOURCES: SourceConfig[] = [
 
   // ── Local Beat ──────────────────────────────────────────────────────────────
   {
+    id:               'nbc4-commanders',
+    name:             'NBC4 Washington',
+    rssUrl:           'https://www.nbcwashington.com/tag/washington-commanders/feed/',
+    quality:          9,
+    type:             'beat',
+    commandersFocus:  true,
+    enabled:          true,
+  },
+  {
     id:               'washington-post',
     name:             'Washington Post',
     rssUrl:           'https://feeds.washingtonpost.com/rss/sports/nfl',
@@ -161,6 +170,24 @@ export const SOURCES: SourceConfig[] = [
     enabled:          true,
   },
   {
+    id:               'pft',
+    name:             'Pro Football Talk',
+    rssUrl:           'https://www.nbcsports.com/profootballtalk.rss',
+    quality:          8,
+    type:             'national',
+    commandersFocus:  false,
+    enabled:          true,
+  },
+  {
+    id:               'nfl-mocks',
+    name:             'NFL Mocks',
+    rssUrl:           'https://nflmocks.com/feed',
+    quality:          6,
+    type:             'national',
+    commandersFocus:  false,
+    enabled:          true,
+  },
+  {
     id:               'nfl-dot-com',
     name:             'NFL.com',
     rssUrl:           'https://www.nfl.com/rss/rsslanding?searchString=commanders',
@@ -175,7 +202,6 @@ export const SOURCES: SourceConfig[] = [
 // Any URL containing these strings will be rejected at ingestion time.
 // ProFootballTalk is permanently blocked per product rules.
 export const BLOCKED_DOMAINS: string[] = [
-  'profootballtalk.com',
   'nfltraderumors.co',
   'fansided.com',          // often low quality
   'clutchpoints.com',

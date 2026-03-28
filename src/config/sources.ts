@@ -13,13 +13,13 @@ import type { SourceConfig } from '../lib/types';
 export const SOURCES: SourceConfig[] = [
   // ── Commanders-focused ──────────────────────────────────────────────────────
   {
-    id:               'commanders-wire',
-    name:             'Commanders Wire',
-    rssUrl:           'https://commanderswire.usatoday.com/feed/',
+    id:               'commanders-official',
+    name:             'Commanders.com',
+    rssUrl:           'https://www.commanders.com/rss/news',
     quality:          8,
     type:             'beat',
     commandersFocus:  true,
-    enabled:          false, // feed dead
+    enabled:          true,
   },
   {
     id:               'hogs-haven',
@@ -27,6 +27,24 @@ export const SOURCES: SourceConfig[] = [
     rssUrl:           'https://www.hogshaven.com/rss/index.xml',
     quality:          7,
     type:             'blog',
+    commandersFocus:  true,
+    enabled:          true,
+  },
+  {
+    id:               'dcsportsking',
+    name:             'DC Sports King',
+    rssUrl:           'https://dcsportsking.com/feed/',
+    quality:          6,
+    type:             'blog',
+    commandersFocus:  true,
+    enabled:          true,
+  },
+  {
+    id:               'bleacher-report',
+    name:             'Bleacher Report',
+    rssUrl:           'https://feeds.bleacherreport.com/articles?tag=washington-commanders',
+    quality:          6,
+    type:             'national',
     commandersFocus:  true,
     enabled:          true,
   },
@@ -44,10 +62,10 @@ export const SOURCES: SourceConfig[] = [
   {
     id:               'nbcs-washington',
     name:             'NBC Sports Washington',
-    rssUrl:           'https://www.nbcsports.com/washington/rss',
+    rssUrl:           'https://www.monumentalsportsnetwork.com/washington/rss',
     quality:          8,
     type:             'local',
-    commandersFocus:  false,
+    commandersFocus:  true,
     enabled:          true,
   },
   {
@@ -80,15 +98,6 @@ export const SOURCES: SourceConfig[] = [
     enabled:          true,
   },
   {
-    id:               'nfl-dot-com',
-    name:             'NFL.com',
-    rssUrl:           'https://www.nfl.com/rss/rsslanding?searchString=commanders',
-    quality:          8,
-    type:             'national',
-    commandersFocus:  false,
-    enabled:          false, // entity expansion errors
-  },
-  {
     id:               'cbs-sports-nfl',
     name:             'CBS Sports',
     rssUrl:           'https://www.cbssports.com/rss/headlines/nfl/',
@@ -98,45 +107,36 @@ export const SOURCES: SourceConfig[] = [
     enabled:          true,
   },
   {
-    id:               'si-nfl',
-    name:             'Sports Illustrated',
-    rssUrl:           'https://www.si.com/nfl/rss',
+    id:               'yahoo-sports-nfl',
+    name:             'Yahoo Sports',
+    rssUrl:           'https://sports.yahoo.com/nfl/rss/',
     quality:          7,
     type:             'national',
     commandersFocus:  false,
-    enabled:          false, // feed dead
-  },
-  {
-    id:               'theringer-nfl',
-    name:             'The Ringer',
-    rssUrl:           'https://www.theringer.com/rss/nfl/index.xml',
-    quality:          8,
-    type:             'national',
-    commandersFocus:  false,
-    enabled:          false, // feed dead
-  },
-  {
-    id:               'touchdown-wire',
-    name:             'Touchdown Wire',
-    rssUrl:           'https://touchdownwire.usatoday.com/feed/',
-    quality:          7,
-    type:             'national',
-    commandersFocus:  false,
-    enabled:          false, // feed dead
-  },
-  {
-    id:               'bleacher-report',
-    name:             'Bleacher Report',
-    rssUrl:           'https://feeds.bleacherreport.com/articles?tag=washington-commanders',
-    quality:          6,
-    type:             'national',
-    commandersFocus:  true,
     enabled:          true,
   },
   {
     id:               'fox-sports-nfl',
     name:             'Fox Sports',
     rssUrl:           'https://api.foxsports.com/v1/rss?legacy=true&searchTerm=nfl',
+    quality:          7,
+    type:             'national',
+    commandersFocus:  false,
+    enabled:          true,
+  },
+  {
+    id:               'pff-nfl',
+    name:             'PFF',
+    rssUrl:           'https://www.pff.com/feed',
+    quality:          8,
+    type:             'national',
+    commandersFocus:  false,
+    enabled:          true,
+  },
+  {
+    id:               'overthecap',
+    name:             'Over The Cap',
+    rssUrl:           'https://overthecap.com/feed',
     quality:          7,
     type:             'national',
     commandersFocus:  false,
@@ -150,6 +150,15 @@ export const SOURCES: SourceConfig[] = [
     type:             'national',
     commandersFocus:  false,
     enabled:          true,
+  },
+  {
+    id:               'nfl-dot-com',
+    name:             'NFL.com',
+    rssUrl:           'https://www.nfl.com/rss/rsslanding?searchString=commanders',
+    quality:          8,
+    type:             'national',
+    commandersFocus:  true,
+    enabled:          false, // entity expansion errors
   },
 ];
 

@@ -218,13 +218,20 @@ const mockBreaking: BreakingItem[] = [
 let data: StoredData = { articles: [], breaking: [], lastRun: null };
 let liveStats: LiveStats | null = null;
 try {
-  const kv = (Astro.locals as any).runtime?.env?.ARTICLES_KV;
+  const runtime = (Astro.locals as any).runtime;
+  const kv: KVNamespace | undefined =
+    runtime?.env?.ARTICLES_KV ??
+    (Astro.locals as any).ARTICLES_KV;
+  console.log('[cw] runtime present:', !!runtime, '| kv bound:', !!kv);
   if (kv) {
     const [allData, statsRaw] = await Promise.all([readAll(kv), kv.get('stats:snapshot')]);
     data = allData;
     if (statsRaw) liveStats = JSON.parse(statsRaw) as LiveStats;
+    console.log('[cw] articles loaded from KV:', allData.articles.length);
   }
-} catch (_e) {}
+} catch (e) {
+  console.error('[cw] KV read error:', e);
+}
 const stats = liveStats ?? { ...TEAM_STATS, source: 'fallback' as const };
 let { articles, breaking, lastRun } = data;
 

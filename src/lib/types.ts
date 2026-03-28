@@ -36,6 +36,7 @@ export interface Article {
   originalHeadline:  string;
   displayHeadline:   string;   // rewritten for display
   summary:           string | null;
+  imageUrl?:         string | null;
   tags:              ArticleTag[];
   score:             number;   // 0–100 composite ranking score
   relevanceScore:    number;   // 0–100 Commanders relevance

@@ -22,6 +22,17 @@ function rel(iso: string): string {
   {/* ── Primary lead ── */}
   {primary && (
     <a href={primary.sourceUrl} target="_blank" rel="noopener noreferrer" class="primary">
+      {primary.imageUrl && (
+        <div class="primary-img-wrap">
+          <img
+            src={primary.imageUrl}
+            alt=""
+            class="primary-img"
+            loading="lazy"
+            onerror="this.closest('.primary-img-wrap').style.display='none'"
+          />
+        </div>
+      )}
       <div class="primary-eyebrow">
         <span class="eyebrow-source">{primary.sourceName}</span>
         {primary.author && <span class="eyebrow-dot">·</span>}
@@ -50,6 +61,17 @@ function rel(iso: string): string {
       {secondaries.map((item, i) => (
         <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer"
            class={`secondary ${i < secondaries.length - 1 ? 'secondary--border' : ''}`}>
+          {item.imageUrl && (
+            <div class="secondary-img-wrap">
+              <img
+                src={item.imageUrl}
+                alt=""
+                class="secondary-img"
+                loading="lazy"
+                onerror="this.closest('.secondary-img-wrap').style.display='none'"
+              />
+            </div>
+          )}
           <div class="secondary-eyebrow">
             <span class="eyebrow-source">{item.sourceName}</span>
             <span class="eyebrow-dot">·</span>
@@ -98,6 +120,24 @@ function rel(iso: string): string {
 
   .primary,
   .secondary { min-width: 0; overflow: hidden; }
+
+  /* Primary image */
+  .primary-img-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    background: var(--surface-2);
+  }
+  .primary-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  .primary:hover .primary-img { transform: scale(1.02); }
 
   .primary-eyebrow,
   .secondary-eyebrow {
@@ -194,6 +234,24 @@ function rel(iso: string): string {
       margin-bottom: 14px;
     }
   }
+
+  /* Secondary image */
+  .secondary-img-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    background: var(--surface-2);
+  }
+  .secondary-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  .secondary:hover .secondary-img { transform: scale(1.02); }
 
   .secondary-hed {
     font-size: 19px;

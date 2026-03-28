@@ -107,6 +107,7 @@ async function ingestSource(
         originalHeadline: raw.title,
         displayHeadline:  displayHead,
         summary:          summary.slice(0, 300) || null,
+        imageUrl:         raw.imageUrl,
         tags,
         score:            partialScore,
         relevanceScore:   relevance,

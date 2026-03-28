@@ -9,6 +9,7 @@ export interface RawItem {
   pubDate:     string;
   description: string | null;
   guid:        string | null;
+  imageUrl:    string | null;
 }
 
 const parser = new XMLParser({
@@ -79,6 +80,48 @@ function extractAuthor(item: Record<string, unknown>): string | null {
   return null;
 }
 
+function extractImage(item: Record<string, unknown>): string | null {
+  // 1. media:content — most common on ESPN, Bleacher Report, NBC4
+  const mc = item['media:content'];
+  if (mc) {
+    const first = Array.isArray(mc) ? mc[0] : mc;
+    if (first && typeof first === 'object') {
+      const url = (first as Record<string, unknown>)['@_url'];
+      if (url && typeof url === 'string' && url.startsWith('http')) return url;
+    }
+  }
+
+  // 2. media:thumbnail
+  const mt = item['media:thumbnail'];
+  if (mt) {
+    const first = Array.isArray(mt) ? mt[0] : mt;
+    if (first && typeof first === 'object') {
+      const url = (first as Record<string, unknown>)['@_url'];
+      if (url && typeof url === 'string' && url.startsWith('http')) return url;
+    }
+    if (typeof mt === 'string' && mt.startsWith('http')) return mt;
+  }
+
+  // 3. enclosure (image/* type only)
+  const enc = item['enclosure'];
+  if (enc && typeof enc === 'object') {
+    const e = enc as Record<string, unknown>;
+    const type = String(e['@_type'] ?? '');
+    const url  = String(e['@_url']  ?? '');
+    if (type.startsWith('image/') && url.startsWith('http')) return url;
+  }
+
+  // 4. Scrape first <img src> from the raw description HTML
+  //    (fast-xml-parser returns description before decoding, so check the raw field)
+  const rawDesc = item['description'];
+  if (typeof rawDesc === 'string') {
+    const m = rawDesc.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (m && m[1].startsWith('http')) return m[1];
+  }
+
+  return null;
+}
+
 export async function fetchRssFeed(
   url: string,
   timeoutMs = 8000,
@@ -111,6 +154,7 @@ export async function fetchRssFeed(
         pubDate:     extractDate(item),
         description: extractText(item['description']) ?? extractText(item['summary']),
         guid:        extractText(item['guid']),
+        imageUrl:    extractImage(item),
       }));
     }
 
@@ -125,6 +169,7 @@ export async function fetchRssFeed(
         pubDate:     extractDate(entry),
         description: extractText(entry['summary']) ?? extractText(entry['content']),
         guid:        extractText(entry['id']),
+        imageUrl:    extractImage(entry),
       }));
     }
 

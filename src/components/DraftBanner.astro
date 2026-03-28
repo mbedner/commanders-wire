@@ -527,18 +527,16 @@ const countdownIso = roundStartIso();
   @media (min-width: 480px) {
     .dr-body--split {
       flex-direction: row;
-      align-items: stretch;
-      height: 320px;      /* definite height — required for children to scroll */
-      overflow: hidden;
     }
+    /* Each section gets its own definite height — this is what enables scroll */
     .dr-body--split .dr-was-section {
       flex: 0 0 48%;
-      min-height: 0;      /* allow flex child to shrink below content */
-      border-right: 1px solid #2a2a2a;
-      border-bottom: none;
+      height: 320px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      border-right: 1px solid #2a2a2a;
+      border-bottom: none;
     }
     .dr-body--split .dr-was-picks {
       flex: 1;
@@ -547,9 +545,8 @@ const countdownIso = roundStartIso();
       overflow-y: auto;
     }
     .dr-body--split .dr-recent {
-      flex: 1 1 auto;
-      min-width: 0;
-      min-height: 0;
+      flex: 1;
+      height: 320px;
       display: flex;
       flex-direction: column;
       overflow: hidden;

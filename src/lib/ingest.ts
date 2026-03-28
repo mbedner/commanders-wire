@@ -77,6 +77,10 @@ async function ingestSource(
 
       if (relevance < MIN_RELEVANCE_SCORE) continue;
 
+      // Reject articles older than 7 days — no "olds" allowed
+      const pubMs = new Date(raw.pubDate).getTime();
+      if (Date.now() - pubMs > 7 * 24 * 60 * 60 * 1000) continue;
+
       const freshness    = scoreFreshness(raw.pubDate);
       const sentiment    = detectSentiment(raw.title, summary);
       const tags         = detectTags(raw.title, summary);

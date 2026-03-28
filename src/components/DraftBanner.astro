@@ -347,9 +347,9 @@ const countdownIso = roundStartIso();
     padding: 2px 7px;
     border-radius: 3px;
   }
-  .dr-state-badge--pre    { background: #1e1e1e; color: #8a8078; border: 1px solid #3a3a3a; }
+  .dr-state-badge--pre    { background: #1e1e1e; color: #a09890; border: 1px solid #3a3a3a; }
   .dr-state-badge--active { background: #3f0a0a; color: #f87171; border: 1px solid #7a1a1a; }
-  .dr-state-badge--post   { background: #1a1a1a; color: #707870; border: 1px solid #3a3a3a; }
+  .dr-state-badge--post   { background: #1a1a1a; color: #a09890; border: 1px solid #3a3a3a; }
 
   /* ── On the Clock ── */
   .dr-clock {
@@ -367,10 +367,10 @@ const countdownIso = roundStartIso();
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #706860;
+    color: #9a9080;
     margin-bottom: 4px;
   }
-  .dr-clock--was .dr-clock-label { color: #b08020; }
+  .dr-clock--was .dr-clock-label { color: #c89010; }
   .dr-clock-team {
     font-size: 22px;
     font-weight: 900;
@@ -381,7 +381,7 @@ const countdownIso = roundStartIso();
   .dr-clock--was .dr-clock-team { color: #e8a820; }
   .dr-clock-pick {
     font-size: 11px;
-    color: #706860;
+    color: #9a9080;
     margin-top: 3px;
     font-weight: 600;
   }
@@ -399,7 +399,7 @@ const countdownIso = roundStartIso();
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #706860;
+    color: #9a9080;
   }
   .dr-next-pick {
     font-size: 9px;
@@ -416,6 +416,8 @@ const countdownIso = roundStartIso();
   .dr-was-picks {
     display: flex;
     flex-direction: column;
+    max-height: 210px;
+    overflow-y: auto;
   }
   .dr-was-pick {
     display: grid;
@@ -439,7 +441,7 @@ const countdownIso = roundStartIso();
   .dr-was-pick-round {
     font-size: 9px;
     font-weight: 700;
-    color: #706860;
+    color: #9a9080;
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
@@ -464,7 +466,7 @@ const countdownIso = roundStartIso();
   .dr-was-pick-name--tbd {
     font-size: 11px;
     font-weight: 600;
-    color: #504840;
+    color: #9a9080;
     font-style: italic;
   }
   .dr-was-pick-pos {
@@ -475,12 +477,12 @@ const countdownIso = roundStartIso();
   }
   .dr-was-pick-college {
     font-size: 10px;
-    color: #706860;
+    color: #9a9080;
   }
   .dr-was-pick-trade {
     font-size: 9px;
     font-weight: 700;
-    color: #a86e08;
+    color: #c89010;
     background: rgba(232,168,32,0.12);
     border: 1px solid rgba(232,168,32,0.25);
     padding: 1px 5px;
@@ -544,13 +546,8 @@ const countdownIso = roundStartIso();
   .dr-recent-list {
     display: flex;
     flex-direction: column;
-    max-height: 220px;
+    max-height: 280px;
     overflow-y: auto;
-  }
-  @media (min-width: 480px) {
-    .dr-body--split .dr-recent-list {
-      max-height: 240px;
-    }
   }
   .dr-pick-row {
     display: grid;
@@ -581,7 +578,7 @@ const countdownIso = roundStartIso();
   .dr-pick-row--was .dr-pick-num { color: #e8a820; }
   .dr-pick-rnd {
     font-size: 9px;
-    color: #504840;
+    color: #9a9080;
     font-weight: 600;
     white-space: nowrap;
   }
@@ -594,7 +591,7 @@ const countdownIso = roundStartIso();
     font-size: 9px;
     font-weight: 800;
     letter-spacing: 0.08em;
-    color: #8a8078;
+    color: #a09890;
     text-transform: uppercase;
   }
   .dr-pick-row--was .dr-pick-team { color: #e8a820; }
@@ -608,10 +605,10 @@ const countdownIso = roundStartIso();
   .dr-pick-pos {
     font-size: 10px;
     font-weight: 700;
-    color: #504840;
+    color: #9a9080;
     letter-spacing: 0.04em;
     white-space: nowrap;
     align-self: center;
   }
-  .dr-pick-row--was .dr-pick-pos { color: #b08020; }
+  .dr-pick-row--was .dr-pick-pos { color: #c89010; }
 </style>

@@ -528,31 +528,35 @@ const countdownIso = roundStartIso();
     .dr-body--split {
       flex-direction: row;
       align-items: stretch;
-      /* Fixed body height — both columns scroll within this */
-      max-height: 320px;
+      height: 320px;      /* definite height — required for children to scroll */
+      overflow: hidden;
     }
     .dr-body--split .dr-was-section {
       flex: 0 0 48%;
+      min-height: 0;      /* allow flex child to shrink below content */
       border-right: 1px solid #2a2a2a;
       border-bottom: none;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
-    /* Picks list fills remaining column height after the header and scrolls */
     .dr-body--split .dr-was-picks {
       flex: 1;
+      min-height: 0;
       max-height: none;
       overflow-y: auto;
     }
     .dr-body--split .dr-recent {
       flex: 1 1 auto;
       min-width: 0;
+      min-height: 0;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
-    /* Recent list fills remaining column height and scrolls */
     .dr-body--split .dr-recent-list {
       flex: 1;
+      min-height: 0;
       max-height: none;
       overflow-y: auto;
     }

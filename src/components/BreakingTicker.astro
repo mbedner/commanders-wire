@@ -51,7 +51,10 @@ if (!items.length) return;
     track.style.setProperty('--shift', `-${halfWidth}px`);
     track.style.animationDuration = `${(halfWidth / PX_PER_SEC).toFixed(2)}s`;
 
-    // Step 5: pause on hover
+    // Step 5: start the animation now that everything is measured correctly.
+    track.style.animationPlayState = 'running';
+
+    // Step 6: pause on hover
     track.addEventListener('mouseenter', () => { track.style.animationPlayState = 'paused'; });
     track.addEventListener('mouseleave', () => { track.style.animationPlayState = 'running'; });
   })();
@@ -88,6 +91,7 @@ if (!items.length) return;
     align-items: center;
     white-space: nowrap;
     animation: ticker-loop 30s linear infinite;
+    animation-play-state: paused;
   }
   .ticker-item {
     display: inline-flex;

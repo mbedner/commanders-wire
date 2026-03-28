@@ -15,7 +15,13 @@ const { dates, schedule, stats, players } = Astro.props;
 </div>
 
 <style>
-  .rail { padding-top: 8px; padding-bottom: 32px; }
+  .rail {
+    position: sticky;
+    top: 56px;
+    padding-top: 8px;
+    padding-bottom: 32px;
+    align-self: start;
+  }
   .rail-sep {
     height: 1px;
     background: var(--border);

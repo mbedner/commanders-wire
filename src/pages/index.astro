@@ -364,13 +364,12 @@ const lastUpdated = lastRun;
       .content-grid {
         grid-template-columns: 1fr 304px;
         gap: 0 32px;
-        align-items: start;
+        align-items: stretch;
       }
       .rail-col {
-        position: sticky;
-        top: 56px;
         min-width: 0;
-        align-self: start;
+        border-left: 1px solid var(--border);
+        padding-left: 32px;
       }
     }
     @media (min-width: 1180px) {

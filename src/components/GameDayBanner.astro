@@ -26,7 +26,7 @@ function ordSuffix(n: number) {
   <div class="gd-scorebar">
     <div class="gd-team gd-team--was">
       <span class="gd-abbr">WAS</span>
-      <span class="gd-score" id="gdWasScore">{phase === 'pregame' ? '—' : washington.score}</span>
+      <span class="gd-score" id="gdWasScore">{washington.score}</span>
     </div>
 
     <div class="gd-middle">
@@ -60,7 +60,7 @@ function ordSuffix(n: number) {
     </div>
 
     <div class="gd-team gd-team--opp">
-      <span class="gd-score" id="gdOppScore">{phase === 'pregame' ? '—' : opponent.score}</span>
+      <span class="gd-score" id="gdOppScore">{opponent.score}</span>
       <span class="gd-abbr">{opponent.abbreviation}</span>
     </div>
   </div>

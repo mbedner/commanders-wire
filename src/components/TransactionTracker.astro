@@ -115,21 +115,31 @@ const BADGE: Record<string, string> = {
   }
   /* Signing — gold */
   .tx-badge--signing {
-    background: var(--gold-bg);
-    color: var(--gold);
-    border: 1px solid var(--gold);
+    background: #fff8e8;
+    color: #a86e08;
+    border: 1px solid #d4a030;
   }
-  /* Trade — burgundy tint */
+  /* Trade — burgundy */
   .tx-badge--trade {
-    background: rgba(155, 21, 53, 0.15);
-    color: var(--accent-alert);
-    border: 1px solid var(--accent-alert);
+    background: #fdf0f3;
+    color: #b03050;
+    border: 1px solid #c06080;
   }
-  /* Release — muted */
+  /* Release — neutral */
   .tx-badge--release {
-    background: var(--surface-3);
+    background: var(--surface-2);
     color: var(--text-3);
     border: 1px solid var(--border-strong);
+  }
+  :root[data-theme="dark"] .tx-badge--signing {
+    background: #1a1200;
+    color: #d4a030;
+    border-color: #8a6010;
+  }
+  :root[data-theme="dark"] .tx-badge--trade {
+    background: #1f0810;
+    color: #d06080;
+    border-color: #7a2040;
   }
 
   .tx-time {

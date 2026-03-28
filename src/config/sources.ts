@@ -19,12 +19,12 @@ export const SOURCES: SourceConfig[] = [
     quality:          8,
     type:             'beat',
     commandersFocus:  true,
-    enabled:          true,
+    enabled:          false, // feed dead
   },
   {
     id:               'hogs-haven',
     name:             'Hogs Haven',
-    rssUrl:           'https://www.hogshaven.com/rss/current',
+    rssUrl:           'https://www.hogshaven.com/rss/index.xml',
     quality:          7,
     type:             'blog',
     commandersFocus:  true,
@@ -86,7 +86,7 @@ export const SOURCES: SourceConfig[] = [
     quality:          8,
     type:             'national',
     commandersFocus:  false,
-    enabled:          true,
+    enabled:          false, // entity expansion errors
   },
   {
     id:               'cbs-sports-nfl',
@@ -104,7 +104,7 @@ export const SOURCES: SourceConfig[] = [
     quality:          7,
     type:             'national',
     commandersFocus:  false,
-    enabled:          true,
+    enabled:          false, // feed dead
   },
   {
     id:               'theringer-nfl',
@@ -113,7 +113,7 @@ export const SOURCES: SourceConfig[] = [
     quality:          8,
     type:             'national',
     commandersFocus:  false,
-    enabled:          true,
+    enabled:          false, // feed dead
   },
   {
     id:               'touchdown-wire',
@@ -122,15 +122,15 @@ export const SOURCES: SourceConfig[] = [
     quality:          7,
     type:             'national',
     commandersFocus:  false,
-    enabled:          true,
+    enabled:          false, // feed dead
   },
   {
     id:               'bleacher-report',
     name:             'Bleacher Report',
-    rssUrl:           'https://bleacherreport.com/articles/feed?tag=washington-commanders',
+    rssUrl:           'https://feeds.bleacherreport.com/articles?tag=washington-commanders',
     quality:          6,
     type:             'national',
-    commandersFocus:  false,
+    commandersFocus:  true,
     enabled:          true,
   },
   {

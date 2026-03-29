@@ -808,14 +808,17 @@ const lastUpdated = lastRun?.completedAt ?? null;
         const url = new URL(a.href);
         if (url.origin === location.origin) return;
         e.preventDefault();
-        // Twitter/X universal links hijack to the native app on iOS even from
-        // window.open. Adding a query param breaks the universal link pattern
-        // match so iOS falls back to the in-app web view instead.
+        // Twitter/X: window.open leaves an orphaned blank Safari window when
+        // iOS Universal Links intercept the URL and open the native app.
+        // Using location.href instead lets iOS intercept cleanly — X opens,
+        // and the PWA's webview is preserved so the user comes back to the
+        // same page with no ghost window.
         const isTwitter = /^(www\.)?(twitter|x)\.com$/i.test(url.hostname);
-        if (isTwitter && !url.searchParams.has('ref')) {
-          url.searchParams.set('ref', 'web');
+        if (isTwitter) {
+          location.href = a.href;
+          return;
         }
-        window.open(url.toString(), '_blank', 'noopener,noreferrer');
+        window.open(a.href, '_blank', 'noopener,noreferrer');
       } catch {}
     }, true);
   }

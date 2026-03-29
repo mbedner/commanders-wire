@@ -20,6 +20,7 @@ import LeadStories         from '../components/LeadStories.astro';
 import NewsStream          from '../components/NewsStream.astro';
 import RightRail           from '../components/RightRail.astro';
 import ReporterVoices      from '../components/ReporterVoices.astro';
+import InstallPrompt       from '../components/InstallPrompt.astro';
 import GameDayBanner       from '../components/GameDayBanner.astro';
 import DraftBanner         from '../components/DraftBanner.astro';
 
@@ -669,6 +670,8 @@ const lastUpdated = lastRun?.completedAt ?? null;
       <ReporterVoices config={REPORTER_CONFIG} />
     </section>
   </main>
+
+  <InstallPrompt />
 
   <script define:vars={{ refreshMs: SITE.refreshIntervalMs }}>
     // ── Auto-reload ───────────────────────────────────────────────────────────

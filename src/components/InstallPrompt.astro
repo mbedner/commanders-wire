@@ -1,0 +1,201 @@
+---
+// ─── PWA Install Prompt ───────────────────────────────────────────────────────
+// Renders a small footer banner prompting users to install the PWA.
+// • Android/Chrome: intercepts BeforeInstallPromptEvent → native install dialog
+// • iOS/Safari:     shows step-by-step share sheet instructions
+// • Already installed (standalone): hidden entirely
+// • Dismissed: hidden for 30 days via localStorage
+---
+
+<div id="install-prompt" class="ip" aria-live="polite" hidden>
+
+  <!-- Android variant -->
+  <div class="ip-inner ip-android" hidden>
+    <div class="ip-text">
+      <strong class="ip-title">Add to Home Screen</strong>
+      <span class="ip-sub">Install Burgundy Feed for a faster, app-like experience.</span>
+    </div>
+    <div class="ip-actions">
+      <button class="ip-btn ip-btn--install" id="ip-install-btn">Install</button>
+      <button class="ip-btn ip-btn--dismiss" id="ip-dismiss-android" aria-label="Dismiss">✕</button>
+    </div>
+  </div>
+
+  <!-- iOS variant -->
+  <div class="ip-inner ip-ios" hidden>
+    <button class="ip-close" id="ip-dismiss-ios" aria-label="Dismiss">✕</button>
+    <strong class="ip-title">Add to Home Screen</strong>
+    <ol class="ip-steps">
+      <li>Tap the <strong>Share</strong> button&nbsp;<span class="ip-icon-share" aria-label="share icon">⎙</span> in Safari's toolbar</li>
+      <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+      <li>Tap <strong>Add</strong> — done!</li>
+    </ol>
+  </div>
+
+</div>
+
+<style>
+  .ip {
+    width: 100%;
+    background: #1a1a1a;
+    border-top: 1px solid #2a2a2a;
+    padding: 0;
+  }
+
+  /* ── Android banner ───────────────────────────────────────────────────────── */
+  .ip-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .ip-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ip-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text, #f0f0f0);
+  }
+  .ip-sub {
+    font-size: 11px;
+    color: var(--text-3, #888);
+    line-height: 1.4;
+  }
+
+  .ip-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .ip-btn {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    border-radius: 6px;
+    transition: opacity 0.15s;
+  }
+  .ip-btn:hover { opacity: 0.8; }
+
+  .ip-btn--install {
+    background: #9b1535;
+    color: #ffffff;
+    font-size: 13px;
+    padding: 7px 16px;
+  }
+  .ip-btn--dismiss {
+    background: transparent;
+    color: var(--text-3, #888);
+    font-size: 16px;
+    padding: 4px 8px;
+  }
+
+  /* ── iOS instruction card ─────────────────────────────────────────────────── */
+  .ip-ios {
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    padding: 14px 16px 16px;
+    gap: 10px;
+  }
+
+  .ip-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-3, #888);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+  }
+
+  .ip-steps {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-2, #ccc);
+    line-height: 1.5;
+  }
+  .ip-steps strong { color: var(--text, #f0f0f0); }
+
+  .ip-icon-share {
+    display: inline-block;
+    font-style: normal;
+    font-size: 15px;
+    color: #3478f6; /* iOS blue */
+    font-weight: 700;
+    vertical-align: -1px;
+  }
+</style>
+
+<script>
+  (() => {
+    const STORAGE_KEY = 'bf-install-dismissed';
+    const DISMISS_DAYS = 30;
+
+    const prompt  = document.getElementById('install-prompt');
+    const android = prompt?.querySelector('.ip-android');
+    const ios     = prompt?.querySelector('.ip-ios');
+    if (!prompt || !android || !ios) return;
+
+    // Already installed as PWA — never show
+    if (matchMedia('(display-mode: standalone)').matches || navigator.standalone) return;
+
+    // Dismissed recently — skip
+    const dismissed = localStorage.getItem(STORAGE_KEY);
+    if (dismissed && Date.now() - parseInt(dismissed, 10) < DISMISS_DAYS * 864e5) return;
+
+    function dismiss() {
+      localStorage.setItem(STORAGE_KEY, String(Date.now()));
+      prompt.hidden = true;
+    }
+
+    document.getElementById('ip-dismiss-ios')?.addEventListener('click', dismiss);
+    document.getElementById('ip-dismiss-android')?.addEventListener('click', dismiss);
+
+    // ── Android: intercept the browser install event ───────────────────────
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      android.hidden = false;
+      prompt.hidden  = false;
+    });
+
+    document.getElementById('ip-install-btn')?.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (outcome === 'accepted') {
+        prompt.hidden = true;
+      }
+    });
+
+    window.addEventListener('appinstalled', () => { prompt.hidden = true; });
+
+    // ── iOS: detect Safari on iPhone/iPad ─────────────────────────────────
+    const isIos    = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    if (isIos && isSafari) {
+      ios.hidden    = false;
+      prompt.hidden = false;
+    }
+  })();
+</script>

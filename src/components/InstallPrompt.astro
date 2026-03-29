@@ -1,28 +1,24 @@
 ---
 // ─── PWA Install Prompt ───────────────────────────────────────────────────────
-// Renders a slim footer banner with two install buttons:
-//   • "Add to Home Screen" (iOS) → opens a modal with step-by-step instructions
-//   • "Install App" (Android)    → triggers BeforeInstallPromptEvent natively
-// Already-installed (standalone) or recently dismissed → hidden
-// Dismissed: hidden for 180 days via localStorage (key: bf-install-v2)
+// Slim footer banner with two install buttons (Remix Icons).
+//   • "iPhone / iPad" → opens modal with Safari share-sheet instructions
+//   • "Install App"   → triggers BeforeInstallPromptEvent (Android/Chrome)
+// Hidden entirely in standalone (PWA) mode or after dismiss (180 days).
+// Force-show for testing: add ?install to the URL.
 ---
 
 <!-- ── Banner ──────────────────────────────────────────────────────────────── -->
 <div id="install-prompt" class="ip" aria-live="polite" hidden>
   <span class="ip-label">Get the app</span>
   <div class="ip-actions">
-    <!-- iOS button — always visible on any platform (user may share link) -->
     <button class="ip-btn ip-btn--ios" id="ip-ios-btn" type="button">
-      <svg class="ip-btn-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-        <path d="M8 1a1 1 0 0 1 .707.293l3 3a1 1 0 0 1-1.414 1.414L9 4.414V11a1 1 0 1 1-2 0V4.414L5.707 5.707A1 1 0 0 1 4.293 4.293l3-3A1 1 0 0 1 8 1ZM2 13a1 1 0 0 1 1-1h10a1 1 0 0 1 0 2H3a1 1 0 0 1-1-1Z"/>
-      </svg>
+      <!-- ri-apple-fill -->
+      <svg class="ip-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.6734 7.22198C10.7974 7.22198 9.44138 6.22598 8.01338 6.26198C6.12938 6.28598 4.40138 7.35397 3.42938 9.04597C1.47338 12.442 2.92538 17.458 4.83338 20.218C5.76938 21.562 6.87338 23.074 8.33738 23.026C9.74138 22.966 10.2694 22.114 11.9734 22.114C13.6654 22.114 14.1454 23.026 15.6334 22.99C17.1454 22.966 18.1054 21.622 19.0294 20.266C20.0974 18.706 20.5414 17.194 20.5654 17.11C20.5294 17.098 17.6254 15.982 17.5894 12.622C17.5654 9.81397 19.8814 8.46998 19.9894 8.40998C18.6694 6.47798 16.6414 6.26198 15.9334 6.21398C14.0854 6.06998 12.5374 7.22198 11.6734 7.22198ZM14.7934 4.38998C15.5734 3.45398 16.0894 2.14598 15.9454 0.849976C14.8294 0.897976 13.4854 1.59398 12.6814 2.52998C11.9614 3.35798 11.3374 4.68998 11.5054 5.96198C12.7414 6.05798 14.0134 5.32598 14.7934 4.38998Z"/></svg>
       iPhone / iPad
     </button>
-    <!-- Android button — shown only when BeforeInstallPromptEvent fires -->
     <button class="ip-btn ip-btn--android" id="ip-android-btn" type="button" hidden>
-      <svg class="ip-btn-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-        <path d="M2.76 5.116A6.998 6.998 0 0 1 8 2.5c2.108 0 3.993.93 5.24 2.616l.992-.808A8.498 8.498 0 0 0 8 1a8.498 8.498 0 0 0-6.232 3.308l.992.808ZM1 8.5a7 7 0 0 0 14 0H1Zm5.5 4.5a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3Z"/>
-      </svg>
+      <!-- ri-android-line -->
+      <svg class="ip-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 13H5V20H19V13ZM19 11C19 7.13401 15.866 4 12 4C8.13401 4 5 7.13401 5 11H19ZM6.38231 3.9681C7.92199 2.73647 9.87499 2 12 2C14.125 2 16.078 2.73647 17.6177 3.9681L19.0711 2.51472L20.4853 3.92893L19.0319 5.38231C20.2635 6.92199 21 8.87499 21 11V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V11C3 8.87499 3.73647 6.92199 4.9681 5.38231L3.51472 3.92893L4.92893 2.51472L6.38231 3.9681ZM9 9C8.44772 9 8 8.55228 8 8C8 7.44772 8.44772 7 9 7C9.55228 7 10 7.44772 10 8C10 8.55228 9.55228 9 9 9ZM15 9C14.4477 9 14 8.55228 14 8C14 7.44772 14.4477 7 15 7C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9Z"/></svg>
       Install App
     </button>
   </div>
@@ -39,10 +35,9 @@
     <ol class="ip-modal-steps">
       <li>
         Tap the <strong>Share</strong> button
+        <!-- ri-upload-2-line (iOS share sheet icon) -->
         <span class="ip-share-icon" aria-label="share icon">
-          <svg viewBox="0 0 20 22" aria-hidden="true" focusable="false">
-            <path d="M10 1v13M4 6l6-5 6 5M3 15v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          </svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 19H20V12H22V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V12H4V19ZM13 9V16H11V9H6L12 3L18 9H13Z"/></svg>
         </span>
         at the bottom of your screen
       </li>
@@ -89,8 +84,8 @@
     font-family: inherit;
     font-size: 12px;
     font-weight: 700;
-    border-radius: 20px;
-    padding: 6px 14px;
+    border-radius: 5px;
+    padding: 6px 13px;
     transition: opacity 0.15s;
     white-space: nowrap;
     line-height: 1;
@@ -106,7 +101,7 @@
     color: #ffffff;
   }
 
-  .ip-btn-icon {
+  .ip-icon {
     width: 13px;
     height: 13px;
     fill: currentColor;
@@ -127,7 +122,7 @@
   }
   .ip-dismiss:hover { color: #e8e8e8; }
 
-  /* ── Modal backdrop ──────────────────────────────────────────────────────── */
+  /* ── Modal ───────────────────────────────────────────────────────────────── */
   .ip-modal {
     position: fixed;
     inset: 0;
@@ -145,13 +140,12 @@
     backdrop-filter: blur(2px);
   }
 
-  /* ── Modal card ──────────────────────────────────────────────────────────── */
   .ip-modal-card {
     position: relative;
     z-index: 1;
     background: #1e1e1e;
     border: 1px solid #333;
-    border-radius: 16px 16px 0 0;
+    border-radius: 12px 12px 0 0;
     padding: 24px 20px 32px;
     width: 100%;
     max-width: 480px;
@@ -215,8 +209,9 @@
     margin: 0 2px;
   }
   .ip-share-icon svg {
-    width: 16px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
+    fill: currentColor;
   }
 </style>
 
@@ -225,14 +220,16 @@
     const STORAGE_KEY  = 'bf-install-v2';
     const DISMISS_DAYS = 180;
 
-    const banner  = document.getElementById('install-prompt');
-    const modal   = document.getElementById('ip-modal');
+    const banner = document.getElementById('install-prompt');
+    const modal  = document.getElementById('ip-modal');
     if (!banner || !modal) return;
 
-    // Already installed as PWA — never show
-    if (matchMedia('(display-mode: standalone)').matches || navigator.standalone) return;
+    // Never show inside the installed PWA
+    const isStandalone = matchMedia('(display-mode: standalone)').matches
+                      || navigator.standalone === true;
+    if (isStandalone) return;
 
-    // Check if URL has ?install param to force-show (for testing)
+    // Check for ?install param to force-show (testing)
     const forceShow = new URLSearchParams(location.search).has('install');
 
     // Dismissed recently — skip (unless forced)
@@ -255,7 +252,6 @@
     document.getElementById('ip-modal-close')?.addEventListener('click', closeModal);
     document.getElementById('ip-modal-backdrop')?.addEventListener('click', closeModal);
 
-    // Close modal on Escape
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && !modal.hidden) closeModal();
     });
@@ -281,14 +277,12 @@
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       deferredPrompt = null;
-      if (outcome === 'accepted') {
-        banner.hidden = true;
-      }
+      if (outcome === 'accepted') banner.hidden = true;
     });
 
     window.addEventListener('appinstalled', () => { banner.hidden = true; });
 
-    // ── iOS Safari detection — show banner (Android button stays hidden) ─────
+    // ── iOS Safari — show banner ─────────────────────────────────────────────
     const isIos    = /iphone|ipad|ipod/i.test(navigator.userAgent);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 

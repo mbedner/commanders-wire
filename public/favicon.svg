@@ -6,10 +6,10 @@
   </defs>
   <!-- Burgundy background -->
   <rect width="32" height="32" rx="5" fill="#5a1414"/>
-  <!-- Diagonal stripe pattern — thin · wide · thin — inspired by the classic helmet -->
+  <!-- Vertical stripe pattern — white · gold · white — inspired by the classic helmet -->
   <g clip-path="url(#clip)">
-    <polygon points="2,0 6,0 14,32 10,32"   fill="#ffffff"/>
-    <polygon points="9,0 17,0 25,32 17,32"  fill="#d4940e"/>
-    <polygon points="20,0 24,0 32,32 28,32" fill="#ffffff"/>
+    <rect x="7"  y="0" width="3" height="32" fill="#ffffff"/>
+    <rect x="14" y="0" width="4" height="32" fill="#d4940e"/>
+    <rect x="22" y="0" width="3" height="32" fill="#ffffff"/>
   </g>
 </svg>

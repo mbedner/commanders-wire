@@ -552,13 +552,9 @@ const lastUpdated = lastRun?.completedAt ?? null;
     .subnav-hide-mobile { display: none; }
     @media (min-width: 480px) { .subnav-hide-mobile { display: block; } }
 
-    /* ── Anchor scroll offset — compensate for the 36px fixed subnav ───────── */
-    #gameday, #draft, #leads, #stream, #voices {
-      scroll-margin-top: 44px;   /* 36px bar + 8px breathing room */
-    }
-    /* Rail items are inside a sticky aside — needs more offset */
-    #rail, #rail-schedule, #transactions {
-      scroll-margin-top: 52px;
+    /* ── Anchor scroll offset — handled by JS for sticky-nav accuracy ───────── */
+    #gameday, #draft, #leads, #stream, #rail, #rail-schedule, #voices, #transactions {
+      scroll-margin-top: 44px;
     }
 
     /* ── Empty state ─────────────────────────────────────────────────────────── */
@@ -697,6 +693,22 @@ const lastUpdated = lastRun?.completedAt ?? null;
         }
       }, { passive: true });
     }
+
+    // ── Anchor links — offset for fixed subnav ────────────────────────────────
+    const NAV_H = 36; // sticky subnav height in px
+    const BUFFER = 8;
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        const id = link.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
+        const navVisible = stickyNav?.classList.contains('is-visible');
+        const offset = navVisible ? NAV_H + BUFFER : BUFFER;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    });
   </script>
 </body>
 </html>

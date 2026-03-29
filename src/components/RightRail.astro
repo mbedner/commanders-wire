@@ -22,11 +22,11 @@ const { dates, schedule, lastSeason, stats, players,
 
 <div class="rail">
   {showTx && txItems.length > 0 && (
-    <div class="rail-section">
+    <div class="rail-section" id="transactions">
       <TransactionTracker items={txItems} label={txLabel} />
     </div>
   )}
-  <div class="rail-section">
+  <div class="rail-section" id="rail-schedule">
     <Schedule schedule={schedule} lastSeason={lastSeason} />
   </div>
   <div class="rail-section">

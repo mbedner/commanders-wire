@@ -1,4 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="4" fill="#7f1d34"/>
-  <text x="16" y="23" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="18" font-weight="900" fill="#f59c00">CW</text>
+  <defs>
+    <clipPath id="clip">
+      <rect width="32" height="32" rx="5"/>
+    </clipPath>
+  </defs>
+  <!-- Burgundy background -->
+  <rect width="32" height="32" rx="5" fill="#5a1414"/>
+  <!-- Diagonal stripe pattern — thin · wide · thin — inspired by the classic helmet -->
+  <g clip-path="url(#clip)">
+    <polygon points="2,0 6,0 14,32 10,32"   fill="#d4940e"/>
+    <polygon points="9,0 17,0 25,32 17,32"  fill="#d4940e"/>
+    <polygon points="20,0 24,0 32,32 28,32" fill="#d4940e"/>
+  </g>
 </svg>

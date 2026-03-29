@@ -268,7 +268,11 @@ const NFC_EAST_RIVALS: Array<{ team: RivalItem['team']; teamName: string; rssUrl
 ];
 
 const NFC_RECENT_MS  = 7 * 24 * 60 * 60 * 1000; // 7 days
-const SPANISH_RE     = /[áéíóúüñÁÉÍÓÚÜÑ¿¡]/;
+// Diacritics common in Spanish
+const SPANISH_CHARS  = /[áéíóúüñÁÉÍÓÚÜÑ¿¡]/;
+// Spanish football vocabulary words that never appear in English headlines
+const SPANISH_WORDS  = /\b(llegan?|acuerdo|acuerdan?|liniero|defensivo|ofensivo|firma(?:ron?|ndo|n)?|contrato|temporada|equipo|jugador|anuncian?|resumen|semana|nuevo|nueva|primer[ao]?)\b/i;
+const isEnglish = (t: string) => !SPANISH_CHARS.test(t) && !SPANISH_WORDS.test(t);
 
 export async function runNfcEastIngest(): Promise<RivalItem[]> {
   const results: RivalItem[] = [];
@@ -280,8 +284,8 @@ export async function runNfcEastIngest(): Promise<RivalItem[]> {
         items
           .filter(item => {
             if (!item.link || !item.title) return false;
-            // Skip non-English content (Spanish diacritics)
-            if (SPANISH_RE.test(item.title)) return false;
+            // Skip non-English content
+            if (!isEnglish(item.title)) return false;
             // Skip stale content older than 7 days
             const age = Date.now() - new Date(item.pubDate).getTime();
             return age >= 0 && age < NFC_RECENT_MS;

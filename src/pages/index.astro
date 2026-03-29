@@ -553,8 +553,12 @@ const lastUpdated = lastRun?.completedAt ?? null;
     @media (min-width: 480px) { .subnav-hide-mobile { display: block; } }
 
     /* ── Anchor scroll offset — compensate for the 36px fixed subnav ───────── */
-    #gameday, #draft, #leads, #stream, #rail, #rail-schedule, #voices, #transactions {
+    #gameday, #draft, #leads, #stream, #voices {
       scroll-margin-top: 44px;   /* 36px bar + 8px breathing room */
+    }
+    /* Rail items are inside a sticky aside — needs more offset */
+    #rail, #rail-schedule, #transactions {
+      scroll-margin-top: 52px;
     }
 
     /* ── Empty state ─────────────────────────────────────────────────────────── */

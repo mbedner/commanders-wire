@@ -23,7 +23,7 @@ interface Props { mode: SplashMode; }
 const { mode } = Astro.props;
 ---
 
-<div id="splash" class={`sp sp--${mode}`} aria-hidden="true" role="presentation">
+<div id="splash" class={`sp sp--${mode}`} aria-hidden="true" role="presentation" hidden>
 
   <!-- Site name revealed after the curtain splits -->
   <div class="sp-reveal">
@@ -257,6 +257,10 @@ const { mode } = Astro.props;
       }
       sessionStorage.setItem('bf-launched', '1');
     }
+
+    // We've confirmed we should show — unhide now (starts hidden to prevent
+    // a flash on normal browser visits before JS has a chance to remove it).
+    splash.hidden = false;
 
     // Hold until page is loaded + minimum display time
     // (prevents the animation being cut short on cache-fast loads)

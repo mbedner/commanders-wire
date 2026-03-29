@@ -808,7 +808,14 @@ const lastUpdated = lastRun?.completedAt ?? null;
         const url = new URL(a.href);
         if (url.origin === location.origin) return;
         e.preventDefault();
-        window.open(a.href, '_blank', 'noopener,noreferrer');
+        // Twitter/X universal links hijack to the native app on iOS even from
+        // window.open. Adding a query param breaks the universal link pattern
+        // match so iOS falls back to the in-app web view instead.
+        const isTwitter = /^(www\.)?(twitter|x)\.com$/i.test(url.hostname);
+        if (isTwitter && !url.searchParams.has('ref')) {
+          url.searchParams.set('ref', 'web');
+        }
+        window.open(url.toString(), '_blank', 'noopener,noreferrer');
       } catch {}
     }, true);
   }

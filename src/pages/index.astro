@@ -357,9 +357,9 @@ const showTxTracker = showTransactionTracker() && espnTransactions.length > 0;
 
 // Only show breaking ticker for items detected within the last 2 hours.
 const BREAKING_TTL_MS = 2 * 60 * 60 * 1000;
-const freshBreaking = breaking.filter(
-  b => Date.now() - new Date(b.detectedAt).getTime() < BREAKING_TTL_MS
-);
+const freshBreaking = breaking
+  .filter(b => Date.now() - new Date(b.detectedAt).getTime() < BREAKING_TTL_MS)
+  .slice(0, 1);
 const hasBreaking = freshBreaking.length > 0;
 const lastUpdated = lastRun?.completedAt ?? null;
 ---

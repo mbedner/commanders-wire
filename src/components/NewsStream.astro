@@ -4,11 +4,8 @@ import StoryItem from './StoryItem.astro';
 interface Props { items: Article[]; }
 const { items } = Astro.props;
 
-const hot   = items.filter(i => i.score >= 75);
-const fresh = items.filter(i => i.score >= 50 && i.score < 75);
-const rest  = items.filter(i => i.score < 50);
-const useGroups = hot.length >= 2 && fresh.length >= 2;
-
+const INITIAL_COUNT = 20;
+const hiddenCount   = Math.max(0, items.length - INITIAL_COUNT);
 let rank = 1;
 ---
 
@@ -17,34 +14,15 @@ let rank = 1;
   <button class="filter-banner-clear" id="filter-banner-clear" type="button" aria-label="Clear filter">✕ clear</button>
 </div>
 
-<div class="stream" id="news-stream">
-  {useGroups ? (
-    <>
-      {hot.length > 0 && (
-        <div class="stream-group" id="grp-hot">
-          <div class="group-lbl">Major News</div>
-          {hot.map(item => <StoryItem item={item} rank={rank++} />)}
-        </div>
-      )}
-      {fresh.length > 0 && (
-        <div class="stream-group" id="grp-fresh">
-          <div class="group-lbl">Fresh Takes</div>
-          {fresh.map(item => <StoryItem item={item} rank={rank++} />)}
-        </div>
-      )}
-      {rest.length > 0 && (
-        <div class="stream-group" id="grp-rest">
-          <div class="group-lbl">National Chatter</div>
-          {rest.map(item => <StoryItem item={item} rank={rank++} />)}
-        </div>
-      )}
-    </>
-  ) : (
-    <div class="stream-group">
-      {items.map(item => <StoryItem item={item} rank={rank++} />)}
-    </div>
-  )}
+<div class="stream stream-capped" id="news-stream">
+  {items.map(item => <StoryItem item={item} rank={rank++} />)}
 </div>
+
+{hiddenCount > 0 && (
+  <button class="see-more-btn" id="see-more-btn" type="button">
+    See {hiddenCount} more {hiddenCount === 1 ? 'story' : 'stories'}
+  </button>
+)}
 
 <style>
   /* ── Filter banner ───────────────────────────────────────────────────────── */
@@ -90,51 +68,76 @@ let rank = 1;
   }
 
   /* ── Stream ──────────────────────────────────────────────────────────────── */
-  .stream { padding-bottom: 16px; }
-  .group-lbl {
-    font-size: 11px;
+  .stream { padding-bottom: 8px; }
+
+  /* Cap: hide articles past the 20th */
+  .stream-capped > :global(article:nth-child(n+21)) { display: none; }
+
+  /* ── See More button ─────────────────────────────────────────────────────── */
+  .see-more-btn {
+    display: block;
+    width: 100%;
+    padding: 11px 0;
+    margin: 4px 0 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-3);
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-4);
-    padding: 14px 0 4px;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: color 0.12s, border-color 0.12s, background 0.12s;
   }
-  .stream-group:first-child .group-lbl { padding-top: 4px; }
+  .see-more-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--surface-2);
+  }
+  .see-more-btn[hidden] { display: none; }
 </style>
 
 <script>
   (() => {
-    const stream = document.getElementById('news-stream');
-    const banner = document.getElementById('filter-banner');
-    const bannerTag = document.getElementById('filter-banner-tag');
+    const stream      = document.getElementById('news-stream');
+    const banner      = document.getElementById('filter-banner');
+    const bannerTag   = document.getElementById('filter-banner-tag');
     const bannerClear = document.getElementById('filter-banner-clear');
+    const seeMoreBtn  = document.getElementById('see-more-btn');
     if (!stream || !banner || !bannerTag || !bannerClear) return;
 
     let activeTag = null;
+    let isCapped  = stream.classList.contains('stream-capped');
+
+    function uncap() {
+      isCapped = false;
+      stream.classList.remove('stream-capped');
+      if (seeMoreBtn) seeMoreBtn.hidden = true;
+    }
 
     function applyFilter(tag) {
       activeTag = tag;
 
-      // Show/hide filter banner
       if (tag) {
         bannerTag.textContent = tag;
         banner.hidden = false;
+        // Auto-expand so all matching articles are visible
+        stream.classList.remove('stream-capped');
+        if (seeMoreBtn) seeMoreBtn.hidden = true;
       } else {
         banner.hidden = true;
+        // Restore cap only if the user hasn't manually expanded
+        if (isCapped) {
+          stream.classList.add('stream-capped');
+          if (seeMoreBtn) seeMoreBtn.hidden = false;
+        }
       }
 
-      // Filter individual articles
-      const articles = stream.querySelectorAll('article[data-tags]');
-      articles.forEach(art => {
+      // Show/hide individual articles
+      stream.querySelectorAll('article[data-tags]').forEach(art => {
         const tags = art.dataset.tags ? art.dataset.tags.split(',') : [];
         art.hidden = !!tag && !tags.includes(tag);
-      });
-
-      // Hide groups that have no visible articles
-      stream.querySelectorAll('.stream-group').forEach(group => {
-        const hasVisible = Array.from(group.querySelectorAll('article[data-tags]'))
-          .some(a => !a.hidden);
-        group.hidden = !hasVisible;
       });
 
       // Scroll to top of Latest News when a filter is applied
@@ -148,17 +151,20 @@ let rank = 1;
       }
     }
 
-    // Clicking a tag pill inside any article activates that filter
+    // Tag pill clicks
     stream.addEventListener('click', e => {
       const btn = e.target.closest('[data-filter-tag]');
       if (!btn) return;
       e.preventDefault();
-      const tag = btn.dataset.filterTag;
-      // Tapping same tag again clears it
-      applyFilter(activeTag === tag ? null : tag);
+      applyFilter(activeTag === btn.dataset.filterTag ? null : btn.dataset.filterTag);
     });
 
-    // Clear button resets the filter
+    // Clear filter
     bannerClear.addEventListener('click', () => applyFilter(null));
+
+    // See More
+    if (seeMoreBtn) {
+      seeMoreBtn.addEventListener('click', uncap);
+    }
   })();
 </script>

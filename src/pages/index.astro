@@ -897,7 +897,10 @@ const lastUpdated = lastRun?.completedAt ?? null;
       toast.appendChild(btn);
       document.body.appendChild(toast);
 
-      btn.addEventListener('click', () => window.location.reload());
+      btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0 });
+        window.location.reload();
+      });
 
       // Auto-dismiss after 12 seconds if ignored
       setTimeout(() => {

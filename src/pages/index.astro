@@ -266,6 +266,22 @@ async function fetchNfcEastStandings() {
   } catch { return []; }
 }
 
+// ── Manual refresh via ?refresh=<secret> ─────────────────────────────────────
+// Visiting /?refresh=Commanders triggers a live ingest before rendering.
+// Keep the param value secret — it matches REFRESH_SECRET in wrangler.toml.
+const refreshParam  = Astro.url.searchParams.get('refresh');
+const REFRESH_SECRET = 'Commanders';
+if (refreshParam === REFRESH_SECRET) {
+  try {
+    await fetch('https://burgundy-feed-ingest.bednermb3420.workers.dev/refresh', {
+      method: 'GET',
+      headers: { 'x-refresh-secret': REFRESH_SECRET },
+    });
+  } catch {
+    // Non-fatal — page still renders with existing KV data
+  }
+}
+
 try {
   const runtime = (Astro.locals as any).runtime;
   const kv: KVNamespace | undefined =
@@ -985,17 +1001,42 @@ const lastUpdated = lastRun?.completedAt ?? null;
       if (!isPulling) return;
       isPulling = false;
       const delta = e.changedTouches[0].clientY - startY;
+
+      if (delta < THRESHOLD) {
+        // Didn't reach threshold — snap back
+        if (ptr) {
+          ptrBars.forEach(b => {
+            b.style.transition = 'height 0.35s cubic-bezier(0.34,1.56,0.64,1)';
+            b.style.height     = PTR_MIN_H + 'px';
+          });
+          ptr.style.opacity   = '0';
+          ptr.style.transform = 'translateX(-50%) translateY(0)';
+          ptr.classList.remove('ptr--ready');
+        }
+        return;
+      }
+
+      // Threshold met — trigger ingest then reload
+      // Keep indicator visible and bouncing while ingest runs
       if (ptr) {
-        // Re-enable transition for the spring snap-back
         ptrBars.forEach(b => {
           b.style.transition = 'height 0.35s cubic-bezier(0.34,1.56,0.64,1)';
-          b.style.height     = PTR_MIN_H + 'px';
+          b.style.height     = PTR_MAX_H + 'px';
         });
-        ptr.style.opacity   = '0';
-        ptr.style.transform = 'translateX(-50%) translateY(0)';
-        ptr.classList.remove('ptr--ready');
+        ptr.style.opacity   = '1';
+        ptr.style.transform = 'translateX(-50%) translateY(44px)';
+        ptr.classList.add('ptr--ready');
       }
-      if (delta >= THRESHOLD) window.location.reload();
+
+      fetch('https://burgundy-feed-ingest.bednermb3420.workers.dev/refresh', {
+        headers: { 'x-refresh-secret': 'Commanders' },
+      })
+        .catch(() => {})
+        .finally(() => {
+          history.scrollRestoration = 'manual';
+          window.scrollTo({ top: 0 });
+          window.location.reload();
+        });
     }, { passive: true });
   }
 

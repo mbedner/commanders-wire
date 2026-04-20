@@ -701,7 +701,8 @@ const lastUpdated = lastRun?.completedAt ?? null;
       z-index: 195;   /* below masthead (200) — masthead floats on top naturally */
       background: var(--surface);
       overflow-y: auto;
-      padding: 16px;  /* padding-top overridden in JS to clear the masthead */
+      padding: 16px;
+      padding-top: 68px; /* masthead inner height (52px) + base padding (16px) */
     }
     #ptr-skeleton[hidden] { display: none; }
     .sk-pulse {
@@ -1380,12 +1381,9 @@ const lastUpdated = lastRun?.completedAt ?? null;
         skeleton.querySelectorAll('.sk-body').forEach(el => {
           el.hidden = el.dataset.skMode !== splashMode;
         });
-        // Skeleton is z-index: 195 (below masthead at 200), so masthead always
-        // floats above it. Push skeleton content down so shimmer rows start
-        // below the masthead rather than hidden behind it.
-        const mastheadEl = document.querySelector('.mast');
-        const mastheadH  = mastheadEl ? mastheadEl.getBoundingClientRect().bottom : 56;
-        skeleton.style.paddingTop = (mastheadH + 16) + 'px';
+        // Skeleton is z-index: 195 (below masthead at 200) so the masthead
+        // always floats above it. CSS padding-top: 68px clears the masthead
+        // without any JS measurement (which misfires during touch overscroll).
         skeleton.hidden = false;
       }
       fetch('https://burgundy-feed-ingest.bednermb3420.workers.dev/refresh', {

@@ -1318,10 +1318,20 @@ const lastUpdated = lastRun?.completedAt ?? null;
     const THRESHOLD = 72;
 
     document.addEventListener('touchstart', e => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-        isPulling = true;
+      if (window.scrollY !== 0) return;
+      // Don't activate PTR when the touch originates inside a scrollable
+      // sub-container (e.g. the draft picks list, recent picks list).
+      // Walk up the DOM — if any ancestor can scroll vertically, let it.
+      let node = e.target;
+      while (node && node !== document.documentElement) {
+        const oy = getComputedStyle(node).overflowY;
+        if ((oy === 'auto' || oy === 'scroll') && node.scrollHeight > node.clientHeight) {
+          return;
+        }
+        node = node.parentElement;
       }
+      startY = e.touches[0].clientY;
+      isPulling = true;
     }, { passive: true });
 
     const ptrBars = ptr ? ptr.querySelectorAll('.ptr-bar') : [];
